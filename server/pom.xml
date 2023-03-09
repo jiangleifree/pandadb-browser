@@ -7,6 +7,7 @@
     <name>pandadb-browser-server</name>
     <version>0.0.3</version>
     <description>pandadb-browser-server</description>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
@@ -28,11 +29,26 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.grapheco.pandadb</groupId>
             <artifactId>pandadb-java-driver</artifactId>
             <version>0.3.2</version>
+        </dependency>-->
+        <!--  <dependency>
+               <groupId>org.grapheco.pandadb</groupId>
+               <artifactId>driver</artifactId>
+               <version>0.3.3</version>
+               <scope>system</scope>
+               <systemPath>${basedir}/src/main/resources/lib/pandadb-java-driver-0.4.6.jar</systemPath>
+           </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.grapheco.pandadb/pandadb-java-driver -->
+        <dependency>
+            <groupId>org.grapheco.pandadb</groupId>
+            <artifactId>pandadb-java-driver</artifactId>
+            <version>0.4.7</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -92,15 +108,29 @@
 
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <source>${java.version}</source>-->
-<!--                    <target>${java.version}</target>-->
-<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- 打包源码 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- 跳过test测试用例的执行 -->
             <plugin>
@@ -110,6 +140,7 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>

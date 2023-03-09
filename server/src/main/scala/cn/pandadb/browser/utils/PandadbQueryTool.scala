@@ -1,7 +1,11 @@
 package cn.pandadb.browser.utils
 
 import cn.pandadb.browser.VO.PandadbConnectionInfo
-
+import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.composite.LynxList
+import org.grapheco.lynx.types.property.LynxInteger
+import org.grapheco.lynx.types.structural.{LynxNode, LynxRelationship}
+import org.grapheco.pandadb.driver.PandaDBDriver
 import java.util
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -12,76 +16,79 @@ class PandadbQueryTool(connectInfo: PandadbConnectionInfo) {
 
   val host = connectInfo.getHost
   val port = connectInfo.getPort
-  val client = new PandaClient(host, port)
 
-  def getNodeCount(nodeName: String): Long = {
-    val result = client.getStatistics().map(m => m.value.map(f => {
-      (f._1, f._2.value.toString.toLong)
-    }))
-    val node = result.head
-    node.get(nodeName).get
-  }
+  val client = new PandaDBDriver(host, port)
+  //val client = new PandaClient(host, port)
 
-  def getRelationShipCount(relationShipName: String): Long = {
-    val result = client.getStatistics().map(m => m.value.map(f => {
-      (f._1, f._2.value.toString.toLong)
-    }))
-    val relationship = result.last
-    relationship.get(relationShipName).get
-  }
+//  def getNodeCount(nodeName: String): Long = {
+//
+//    val result = client.getStatistics().map(m => m.value.map(f => {
+//      (f._1, f._2.value.toString.toLong)
+//    }))
+//    val node = result.head
+//    node.get(nodeName).get
+//  }
 
-  def getAllNodeCount(): Long = {
-    var nodeCount = 0L
+//  def getRelationShipCount(relationShipName: String): Long = {
+//    val result = client.getStatistics().map(m => m.value.map(f => {
+//      (f._1, f._2.value.toString.toLong)
+//    }))
+//    val relationship = result.last
+//    relationship.get(relationShipName).get
+//  }
 
-    val result = client.getStatistics().map(m => m.value.map(f => {
-      (f._1, f._2.value.toString.toLong)
-    }))
-    val node = result.head
-    node.foreach(f => {
-      nodeCount += f._2.toString.toLong
-    })
-    nodeCount
-  }
+//  def getAllNodeCount(): Long = {
+//    var nodeCount = 0L
+//
+//    val result = client.getStatistics().map(m => m.value.map(f => {
+//      (f._1, f._2.value.toString.toLong)
+//    }))
+//    val node = result.head
+//    node.foreach(f => {
+//      nodeCount += f._2.toString.toLong
+//    })
+//    nodeCount
+//  }
 
-  def getAllRelationShipCount(): Long = {
-    var relationShipCount = 0L
-    val result = client.getStatistics().map(m => m.value.map(f => {
-      (f._1, f._2.value.toString.toLong)
-    }))
-    val relationship = result.last
-    relationship.foreach(f => {
-      relationShipCount += f._2.toString.toLong
-    })
-    relationShipCount
-  }
+//  def getAllRelationShipCount(): Long = {
+//    var relationShipCount = 0L
+//    val result = client.getStatistics().map(m => m.value.map(f => {
+//      (f._1, f._2.value.toString.toLong)
+//    }))
+//    val relationship = result.last
+//    relationship.foreach(f => {
+//      relationShipCount += f._2.toString.toLong
+//    })
+//    relationShipCount
+//  }
 
-  def getStatistics(): util.Map[String, Any] = {
-    val result = client.getStatistics().map(m => m.value.map(f => {
-      (f._1, f._2.value.toString.toLong)
-    }))
-    val node = result.head
-    val relationship = result.last
-
-    val retJavaMap = new util.HashMap[String, Any]()
-    val retNodeList = new ListBuffer[String]
-    val retRelationShipList = new ListBuffer[String]
-    var nodeCount = 0L
-    var relationShipCount = 0L
-    node.foreach(f => {
-      retNodeList.append(f._1)
-      nodeCount += f._2.toString.toLong
-    })
-    relationship.foreach(f => {
-      retRelationShipList.append(f._1)
-      relationShipCount += f._2.toString.toLong
-    })
-
-    retJavaMap.put("nodeCount", nodeCount)
-    retJavaMap.put("relCount", relationShipCount)
-    retJavaMap.put("nodeLabels", retNodeList.asJava)
-    retJavaMap.put("relTypes", retRelationShipList.asJava)
-    retJavaMap
-  }
+//  def getStatistics(): util.Map[String, Any] = {
+//    val result = client.getStatistics().map(m => m.value.map(f => {
+//      (f._1, f._2.value.toString.toLong)
+//    }))
+//    val node = result.head
+//    val relationship = result.last
+//
+//    val retJavaMap = new util.HashMap[String, Any]()
+//    val retNodeList = new ListBuffer[String]
+//    val retRelationShipList = new ListBuffer[String]
+//    var nodeCount = 0L
+//    var relationShipCount = 0L
+//    node.foreach(f => {
+//      retNodeList.append(f._1)
+//      nodeCount += f._2.toString.toLong
+//    })
+//    relationship.foreach(f => {
+//      retRelationShipList.append(f._1)
+//      relationShipCount += f._2.toString.toLong
+//    })
+//
+//    retJavaMap.put("nodeCount", nodeCount)
+//    retJavaMap.put("relCount", relationShipCount)
+//    retJavaMap.put("nodeLabels", retNodeList.asJava)
+//    retJavaMap.put("relTypes", retRelationShipList.asJava)
+//    retJavaMap
+//  }
 
   def getDataByCql(cypher: String): util.Map[String, Any] = {
     val retMap = new util.HashMap[String, Any]

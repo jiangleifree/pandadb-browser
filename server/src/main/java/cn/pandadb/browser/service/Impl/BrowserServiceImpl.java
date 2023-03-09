@@ -3,11 +3,11 @@ package cn.pandadb.browser.service.Impl;
 import cn.pandadb.browser.VO.ExecuteCypherVo;
 import cn.pandadb.browser.VO.PandadbConnectionInfo;
 import cn.pandadb.browser.service.BrowserService;
-import cn.pandadb.browser.utils.PandadbQueryTool;
 import cn.pandadb.browser.utils.PatternProcess;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,8 +51,13 @@ public class BrowserServiceImpl implements BrowserService {
         }
 
         PandadbConnectionInfo info = new PandadbConnectionInfo(executeCypherVo);
-        PandadbQueryTool pandaQueryTool = new PandadbQueryTool(info);
-        return pandaQueryTool.getStatistics();
+        //PandadbQueryTool pandaQueryTool = new PandadbQueryTool(info);
+        Map<String, Object> retJavaMap = new HashMap<>();
+        retJavaMap.put("nodeCount", 1);
+        retJavaMap.put("relCount", 1);
+        retJavaMap.put("nodeLabels", Collections.emptyList());
+        retJavaMap.put("relTypes", Collections.emptyList());
+        return retJavaMap;
     }
 
     @Override

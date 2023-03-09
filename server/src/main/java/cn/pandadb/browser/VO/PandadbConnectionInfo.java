@@ -20,6 +20,8 @@ public class PandadbConnectionInfo {
         this.host = pandadbUrl.split(":")[1].substring(2);
     }
 
+
+
     public String getPandadbUrl() {
         return pandadbUrl;
     }
