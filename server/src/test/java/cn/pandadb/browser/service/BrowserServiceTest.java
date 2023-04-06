@@ -4,9 +4,11 @@ import java.util.Map;
 
 import cn.pandadb.browser.VO.PandadbConnectionInfo;
 import cn.pandadb.browser.utils.PatternProcess;
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -15,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.pandadb.browser.PandadbBrowserApplication;
 import cn.pandadb.browser.VO.ExecuteCypherVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 @SpringBootTest(classes = PandadbBrowserApplication.class)
 @RunWith(SpringRunner.class)
@@ -22,6 +25,58 @@ import lombok.extern.slf4j.Slf4j;
 public class BrowserServiceTest {
     @Autowired
     private BrowserService browserService;
+
+    @Test
+    public void muticTest() {
+        ExecuteCypherVo executeCypherVo = new ExecuteCypherVo();
+        //executeCypherVo.setPandadbUrl("panda://10.0.82.148:7602");
+        executeCypherVo.setPandadbUrl("panda://10.0.82.143:7612");
+        if (StringUtils.isEmpty(executeCypherVo.getUsername())) {
+            executeCypherVo.setUsername("neo4j");
+
+        }
+        if (StringUtils.isEmpty(executeCypherVo.getPassword())) {
+            executeCypherVo.setPassword("neo4j");
+        }
+
+        executeCypherVo.setCypher("MATCH (p1:person)-[k:knows*2]->(p2:person) WHERE p1.firstName = 'Evangelos' and p1.lastName = 'Alkaios' RETURN p1,p2,k limit 10");
+
+        Map<String, Object> result =
+                browserService.executeCypher(executeCypherVo);
+
+//        JSONObject jsonObject = new JSONObject(result);
+//        log.error(jsonObject.toJSONString());
+
+        Gson gson = new Gson();
+        String s = gson.toJson(result);
+        log.error(s);
+    }
+
+    @Test
+    public void retPathest() {
+        ExecuteCypherVo executeCypherVo = new ExecuteCypherVo();
+        //executeCypherVo.setPandadbUrl("panda://10.0.82.148:7602");
+        executeCypherVo.setPandadbUrl("panda://10.0.82.143:7612");
+        if (StringUtils.isEmpty(executeCypherVo.getUsername())) {
+            executeCypherVo.setUsername("neo4j");
+
+        }
+        if (StringUtils.isEmpty(executeCypherVo.getPassword())) {
+            executeCypherVo.setPassword("neo4j");
+        }
+
+        executeCypherVo.setCypher("MATCH path = (p1:person)-[k:knows*2]->(p2:person) WHERE p1.firstName = 'Evangelos' and p1.lastName = 'Alkaios' RETURN path limit 10");
+
+        Map<String, Object> result =
+                browserService.executeCypher(executeCypherVo);
+
+//        JSONObject jsonObject = new JSONObject(result);
+//        log.error(jsonObject.toJSONString());
+
+        Gson gson = new Gson();
+        String s = gson.toJson(result);
+        log.error(s);
+    }
 
     @Test
     public void getDataTestV07() {
@@ -45,7 +100,7 @@ public class BrowserServiceTest {
         //pandadbQueryTool.getDataByCql("match (n) return n limit 1");
         //Map<String, Object> dataByCql = pandadbQueryTool.getDataByCql("match (n)-[r]-(n2) where id(n) = 300000003184020 return n,r,n2 limit 25");
         String s = JSONObject.toJSONString(dataByCypher);
-        System.out.println(s);
+        //System.out.println(s);
     }
 
     @Test
